@@ -102,7 +102,7 @@
 
 <div id="text-container">
   <p class="line">Даша, привіт.</p>
-  <p class="line">Я останнім часом багато думав про нас.</p>
+  <p class="line">я останнім часом багато думав про нас.</p>
   <p class="line">Скільки б років не минало, які б паузи</p>
   <p class="line">між нами не виникали та куди б не заносило життя —</p>
   <p class="line">для мене все це нічого не змінило.</p>
@@ -120,7 +120,6 @@
     <button id="yes-btn" onclick="handleYes()">Я теж цього хочу...</button>
     <button id="no-btn" class="secondary" onclick="handleNo()">Давай залишимося друзями</button>
 </div>
-
 <script>
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
@@ -186,7 +185,6 @@ class Petal {
     ctx.restore();
   }
 }
-
 class Particle {
   constructor(index) {
     this.index = index;
@@ -254,10 +252,8 @@ for (let i = 0; i < numPetals; i++) petals.push(new Petal());
 function startExperience() {
     document.getElementById('start-box').classList.remove('show');
     setTimeout(() => document.getElementById('start-box').style.display = 'none', 500);
-    
     currentStage = 'heart';
     setTimeout(() => { currentStage = 'scatter'; }, 4000);
-    
     setTimeout(() => {
       startTextScroll = true;
       const lines = document.querySelectorAll('.line');
@@ -266,6 +262,8 @@ function startExperience() {
       });
     }, 5500);
 }
+
+document.getElementById('start-btn').onclick = startExperience;
 
 function handleYes() {
     document.getElementById('choice-box').classList.remove('show');
@@ -280,11 +278,13 @@ function handleNo() {
     heartSpeed = 2200; 
 }
 
+document.getElementById('yes-btn').onclick = handleYes;
+document.getElementById('no-btn').onclick = handleNo;
+
 function getHeartbeatScale(cycleTime) {
   const firstBeat = heartSpeed * 0.075;
   const returnNorm = heartSpeed * 0.137;
   const secondBeat = heartSpeed * 0.212;
-  
   if (cycleTime < firstBeat) {
     return 1 + Math.sin((cycleTime / firstBeat) * Math.PI) * 0.16; 
   } else if (cycleTime < returnNorm) {
@@ -300,46 +300,52 @@ let startTimestamp = null;
 
 function animate(timestamp) {
   if (!startTimestamp) startTimestamp = timestamp;
-  
-Используйте код с осторожностью.
-ctx.fillStyle = 'rgba(11, 5, 16, 0.2)';
-ctx.fillRect(0, 0, width, height);
-petals.forEach(petal => {
-petal.update();
-petal.draw();
-});
-if (startTextScroll && textContainer) {
-textTopPos -= 0.35;
-textContainer.style.top = textTopPos + 'px';
-if (textTopPos < -textContainer.offsetHeight - 90 && currentStage !== 'finalHeart') {
-startTextScroll = false;
-textContainer.style.display = 'none';
-currentStage = 'finalHeart';
-document.getElementById('choice-box').classList.add('show');
-}
-}
-if (currentStage === 'finalHeart') {
-const cycleTime = (timestamp - startTimestamp) % heartSpeed;
-heartbeatScale = getHeartbeatScale(cycleTime);
-if (globalFinalAlpha < 1) globalFinalAlpha += 0.005;
-}
-particles.forEach(p => {
-p.update();
-p.draw();
-});
-if (currentStage === 'finalHeart' && showLoveText) {
-if (textAlpha < 1) textAlpha += 0.01;
-ctx.save();
-ctx.fillStyle = "rgba(255, 192, 203, " + textAlpha + ")";
-ctx.shadowBlur = 15;
-ctx.shadowColor = "rgba(247, 111, 111, 0.6)";
-const currentFontSize = Math.round((width < 600 ? 28 : 34) * heartbeatScale);
-ctx.font = "bold " + currentFontSize + "px 'Segoe UI', sans-serif";
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-ctx.fillText("I love you", width / 2, height / 2 - 30);
-ctx.restore();
+  ctx.fillStyle = 'rgba(11, 5, 16, 0.2)';
+  ctx.fillRect(0, 0, width, height);
+
+  petals.forEach(petal => {
+    petal.update();
+    petal.draw();
+  });
+
+  if (startTextScroll && textContainer) {
+    textTopPos -= 0.35; 
+    textContainer.style.top = textTopPos + 'px';
+    if (textTopPos < -textContainer.offsetHeight - 90 && currentStage !== 'finalHeart') {
+      startTextScroll = false;
+      textContainer.style.display = 'none';
+      currentStage = 'finalHeart'; 
+      document.getElementById('choice-box').classList.add('show');
+    }
+  }
+
+  if (currentStage === 'finalHeart') {
+    const cycleTime = (timestamp - startTimestamp) % heartSpeed;
+    heartbeatScale = getHeartbeatScale(cycleTime);
+    if (globalFinalAlpha < 1) globalFinalAlpha += 0.005;
+  }
+
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+
+  if (currentStage === 'finalHeart' && showLoveText) {
+    if (textAlpha < 1) textAlpha += 0.01;
+    ctx.save();
+    ctx.fillStyle = "rgba(255, 192, 203, " + textAlpha + ")"; 
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "rgba(247, 111, 111, 0.6)";
+    const currentFontSize = Math.round((width < 600 ? 28 : 34) * heartbeatScale);
+    ctx.font = "bold " + currentFontSize + "px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("I love you", width / 2, height / 2 - 30);
+    ctx.restore();
+  }
+  requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);
-}
-requestAnimationFrame(animate);
+</script>
+</body>
+</html>
